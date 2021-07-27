@@ -1,4 +1,3 @@
-package chapter01.comparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
