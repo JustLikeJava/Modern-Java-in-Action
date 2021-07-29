@@ -120,3 +120,82 @@
     * ex) `(int x) -> x + 1 // x라는 인수로 호출하면 x + 1 을 반환`
     * 직접 메서드를 정의할 수도 있지만, 이용할 수 있는 편리한 클래스나 메서드가 없을 때 새로운 람다 문법을 이용하면 더 간결하게 코드를 구현 가능.
     * 람다 문법 형식으로 구현된 프로그램을 __함수형 프로그래밍__ , 즉 '함수를 일급값으로 넘겨주는 프로그램을 구현하다'라고 한다.
+
+### **코드 넘겨주기 : 예제 (예제 FilteringApples.java 참고)**
+* 특정 조건으로 사과를 필터링하는 코드
+    * 복사&붙여넣기 방식 (자바 8 이전)
+    ```
+    // 녹색 사과 필터링
+    public static List<Apple> filterGreenApples(List<Apple> inventory) {
+        List<Apple> result = new ArrayList<>();
+        for (Apple apple : inventory) {
+        if ("green".equals(apple.getColor())) {
+            result.add(apple);
+        }
+        }
+        return result;
+    }
+
+    // 150그램 이상의 무게를 가진 사과 필터링
+    public static List<Apple> filterHeavyApples(List<Apple> inventory) {
+        List<Apple> result = new ArrayList<>();
+        for (Apple apple : inventory) {
+        if (apple.getWeight() > 150) {
+            result.add(apple);
+        }
+        }
+        return result;
+    }
+    ```
+    * 복사&붙여넣기의 단점: 어떤 코드에 버그가 있다면 복사&붙여넣기한 모든 코드를 고쳐야 함.
+    
+    * 코드를 인수로 넘겨주는 방식 (자바 8)
+    ```
+    public static boolean isGreenApple(Apple apple) {
+        return "green".equals(apple.getColor());
+    }
+
+    public static boolean isHeavyApple(Apple apple) {
+        return apple.getWeight() > 150;
+    }
+
+    // 명확히 하기 위해 추가함(보통 java.util.function에서 import)
+    public interface Predicate<T>{
+        boolean test(T t);
+    }
+
+    public static List<Apple> filterApples(List<Apple> inventory, Predicate<Apple> p) {
+        List<Apple> result = new ArrayList<>();
+        for (Apple apple : inventory) {
+        if (p.test(apple)) {
+            result.add(apple);
+        }
+        }
+        return result;
+    }
+
+    // 메서드를 전달하여 호출
+    filterApples(inventory, Apple::isGreenApple); // 녹색 사과 필터링
+    filterApples(inventory, Apple::isHeavyApple); // 150그램 이상의 무게를 가진 사과 필터링
+    ```
+    * __Predicate__ 란 무엇인가?
+        * 수학에선 인수로 값을 받아 true나 false를 반환하는 함수를 Predicate라고 함.
+        * 자바 8에서도 `Function<Apple, Boolean>` 같이 코드를 구현할 수 있지만 `Predicate<Apple>`을 사용하는 것이 더 표준적인 방식.
+        (또한 boolean을 Boolean으로 변환하는 과정이 없으므로 더 효율적)
+
+### **1.3.3 메서드 전달에서 람다로**
+* 메서드를 값으로 전달하는 것은 유용하지만 한두 번만 사용할 메서드를 매번 정의하는 것은 귀찮은 일.
+
+    * 자바 8에선 이 문제를 __람다(익명 함수)__ 라는 새로운 개념을 이용하여 해결.
+    * 코드 예시
+    ```
+    filterApples(inventory, (Apple a) -> "green".equals(a.getColor())) ; // 녹색 사과 필터링
+    filterApples(inventory, (Apple a) -> a.getWeight() > 150); // 150그램 이상의 무게를 가진 사과 필터링
+    // 80그램 이하의 무게를 가지거나 갈색 사과 필터링
+    filterApples(inventory, (Apple a) -> a.getWeight() < 80 || "brown".equals(a.getColor()));
+    ```
+    * 위 코드는 더 짧고 간결하여 유용, 하지만 람다가 몇 줄 이상으로 길어진다면(복잡한 동작) 메서드를 정의하여 메서드 참조를 활용하자.
+    * 코드의 명확성이 우선시되어야 함.
+
+## **1.4 스트림**
+    
