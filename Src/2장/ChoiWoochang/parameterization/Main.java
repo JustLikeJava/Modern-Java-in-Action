@@ -1,5 +1,3 @@
-package chapter02.parameterization;
-
 import java.util.ArrayList;
 import java.util.List;
 

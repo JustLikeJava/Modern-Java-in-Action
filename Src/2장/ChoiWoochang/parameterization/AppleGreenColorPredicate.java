@@ -1,4 +1,3 @@
-package chapter02.parameterization;
 
 public class AppleGreenColorPredicate implements ApplePredicate {
 

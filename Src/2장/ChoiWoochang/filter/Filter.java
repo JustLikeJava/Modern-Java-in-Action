@@ -1,5 +1,3 @@
-package chapter02.filter;
-
 import java.util.ArrayList;
 import java.util.List;
 
