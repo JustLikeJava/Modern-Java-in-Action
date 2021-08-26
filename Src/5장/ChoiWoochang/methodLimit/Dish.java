@@ -1,5 +1,3 @@
-package com.company;
-
 public class Dish {
 
     private final String name;
